@@ -13,7 +13,6 @@ var Stack = function() {
 
 var stackMethods = {
   size               : function(){
-  	console.log("length test",this.length);
   	return this.length;
   },
   push               : function(value){
