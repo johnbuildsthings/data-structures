@@ -2,112 +2,98 @@ var HashTable = function(){
   this._limit = 8;
 
   // if occupancy/limit >= 75% double 
-  // if occupancy/limit <= 24% half
+  // if occupancy/limit <= 25% half
   this._DOUBLE = 0.75;
   this._HALF = 0.25;
   this._occupancy = 0;
-
-
   this._storage = LimitedArray(this._limit);
-  this._storage.each(function(item){
-  	item = hashNode(null, null);
-  })
+
+  
 };
 
 HashTable.prototype.insert = function(k, v){
-  var i = getIndexBelowMaxForKey(k, this._limit);
-  var newNode = hashNode(k, v);
 
-  // if there are no values at index
-  
-  //debugger;
-  var bucket = this._storage.get(i);
-  if(bucket === undefined){
-  	var headNode = hashNode(null, null);
-  	this._storage.set(i, headNode);
-  	bucket = this._storage.get(i);
-  	console.log("node test : ",bucket);
-  	//debugger;
+  var i = getIndexBelowMaxForKey(k, this._limit);
+  var bucketList = this._storage.get(i);
+
+  if (!bucketList) {
+    bucketList = LinkedList();
+    this._storage.set(i, bucketList);
   }
-  insertNode(bucket, newNode);
+  bucketList.addToTail(v, k);
 
   this._occupancy++;
-  console.log(this._storage.get(i));
-  //debugger;
-  //debugger;
-  /*if (this._occupancy/this._limit >= this._HALF) {
-  	//debugger;
-  	this.half();
-  	console.log(this._limit);
-  	debugger;
-  }*/
+  if (this._occupancy/this._limit >= this._DOUBLE) {
+    var newLimit = this._limit*2;
+    this.resize(newLimit);
+  }  
 };
 
 HashTable.prototype.retrieve = function(k){
+
   var i = getIndexBelowMaxForKey(k, this._limit);
-  var bucket = this._storage.get(i);
-  var holder = retrieveNode(bucket, k);
-  //debugger;
-  return holder;
+  var bucketList = this._storage.get(i);
+  var retrievedNode = null;
+  if(bucketList !== undefined){
+    if (bucketList.head != null) {
+      retrievedNode = retrieveNode(bucketList.head, k);
+      retrievedNode = retrievedNode.value;
+    }
+  }
+  return retrievedNode;
 };
 
 HashTable.prototype.remove = function(k){
   var i = getIndexBelowMaxForKey(k, this._limit);
-  var bucket = this._storage.get(i);
+  var bucketList = this._storage.get(i);
   
-  var parentNode = retrieveParentNode(bucket, k);
-  parentNode.next = parentNode.next.next;
+  if (bucketList.head.key === k){
+    bucketList.removeHead();
+    if(bucketList.head === null){
+      this._storage.set(i, undefined);
+    }
+  }
+  else{
+    var parentNode = retrieveParentNode(bucketList.head, k);
+    parentNode.next = parentNode.next.next;
+  }
+  this._occupancy--;
+  if (this._occupancy/this._limit < this._HALF) {
+    var newLimit = Math.floor(this._limit/2);
+    this.resize(newLimit);
+  }
 };
 
-HashTable.prototype.half = function(){
-  // Set new Size
-  var newLimit = Math.floor(this._limit/2);
+HashTable.prototype.resize = function(newLimit){
+ 
+  // Reset Occupancy
+  this._occupancy = 0;
 
-  // Save old Storage
-  var oldStorage = this._storage.slice(0);
-
-  // Initialize new storage
-  var newStorage = LimitedArray(newLimit);
-  for (var i = 0; i < newLimit; i++){
-  	newStorage[i] = {};
-  }
-
-  this._storage = newStorage;
+  // Save old limit and update to newLimit
+  var oldLimit = this._limit;
   this._limit = newLimit;
 
-  for (var n = 0; n < oldstorage.length; n++){
-  	if (Object.keys(oldStorage[n]) ) {
-  		for (var key in oldStorage[n]) {
-  			this.insert(key, oldStorage[n][key]);
-  		}
-  	}
+  // Initialize new Storage
+  var oldStorage = this._storage;
+  var newStorage = LimitedArray(this._limit);
+  this._storage = newStorage;
+  
+  for (var i = 0; i < oldLimit; i++){
+    bucketList = oldStorage.get(i);
+    if (bucketList != undefined) {
+      do {
+        //debugger;
+        this.insert(bucketList.head.key, bucketList.head.value);
+        bucketList.removeHead();
+      } while (bucketList.head != null)
+    }
   }
-
-};
-
-var hashNode = function(key, value){
-  var node = {};
-  node.key = key
-  node.value = value;
-  node.next = null;
-  return node;
-};
-
-var insertNode = function(Node, insertNode) {
-	if (Node.next === null) {
-		Node.next = insertNode;
-	}
-	else
-	{
-		insertNode(Node.next, insertNode);
-	}
 };
 
 var retrieveNode = function(Node, k) {
   if (Node.key === k)
   {
-  	//debugger;
-  	return Node.value;
+  	return Node;
   }
   else{
   	if (Node.next != null) {
@@ -118,7 +104,8 @@ var retrieveNode = function(Node, k) {
 };
 
 var retrieveParentNode = function(Node, k) {
-	if (Node.next.key === k){
+	
+  if (Node.next.key === k){
 		return Node;
 	}
 	else {
@@ -129,9 +116,11 @@ var retrieveParentNode = function(Node, k) {
 	}
 }
 
-
-
-
 /*
  * Complexity: What is the time complexity of the above functions?
  */
+
+ // .insert()         O(1)
+ // .retrieve()       O(n)
+ // .remove()         O(n)
+ //

@@ -1,11 +1,9 @@
-
-
 var Graph = function(){
 	this.storage = {};
 };
 
 Graph.prototype.addNode = function(node){
-	var newNode = new Node(node);
+	var newNode = new graphNode(node);
 	this.storage[node] = newNode;
 };
 
@@ -30,8 +28,6 @@ Graph.prototype.hasEdge = function(fromNode, toNode){
 			return true;
 		}
 	}
-	//console.log("edgeList : ", this.storage[fromNode].edgeList);
-	//debugger;
 	return false;
 };
 
@@ -52,15 +48,12 @@ Graph.prototype.removeEdge = function(fromNode, toNode){
 
 Graph.prototype.forEachNode = function(cb){
 	for(var k in this.storage){
-		console.log("Before edgeList", this.storage[k].edgeList);
 		cb(k);
-		console.log("After edgeList", this.storage[k].edgeList);
 	}
-	//debugger;
 };
 
 
-var Node = function(value){
+var graphNode = function(value){
 	var node = {};
 
 	node.value = value;
@@ -71,5 +64,12 @@ var Node = function(value){
  * Complexity: What is the time complexity of the above functions?
  */
 
+// .addNode()					O(1)
+// .contains()				O(n)
+// .removeNode()			O(n)
+// .addEdge()					O(n)
+// .hasEdge()					O(n)
+// .removeEdge()			O(n)
+// .forEachNode()			O(n)
 
 

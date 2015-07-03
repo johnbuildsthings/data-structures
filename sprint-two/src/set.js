@@ -8,14 +8,15 @@ var Set = function(){
 var setPrototype = {};
 
 setPrototype.add = function(item){
-	this._storage[this._length] = item;
-	this._length++;
+	if(!this.contains(item)){
+		this._storage.push(item);
+		this._length++;
+	}
 };
 
 setPrototype.contains = function(item){
 	for(var i=0;i<this._length;i++){
 		if(this._storage[i] === item){
-			if (this._storage[i] === "Mel Gibson"){debugger;}
 			return true;
 		}
 	}
@@ -33,3 +34,7 @@ setPrototype.remove = function(item){
 /*
  * Complexity: What is the time complexity of the above functions?
  */
+
+// .add()         O(1)
+// .contains()    O(n)
+// .remove()      O(n)

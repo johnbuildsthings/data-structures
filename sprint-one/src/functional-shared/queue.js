@@ -2,9 +2,10 @@ var Queue = function(){
   // Hey! Rewrite in the new style. Your code will wind up looking very similar,
   // but try not not reference your old code in writing the new style.
   var queueInstance = {storage : {}, length : 0};
-  for (var key in queueMethods) {
+  /*for (var key in queueMethods) {
   	queueInstance[key] = queueMethods[key];
-  }
+  }*/
+  _.extend(queueInstance, queueMethods);
   return queueInstance;
 };
 
