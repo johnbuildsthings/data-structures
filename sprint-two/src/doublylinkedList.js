@@ -17,18 +17,25 @@ var doublylinkedList = function (){
 
 	storage.removeHead = function(){
 
+    var head = storage.head;
+    var headValue = null;
+    if (head !== null) {
+      storage.head = head.next;
+      storage.head.previous = null;
+      headValue = head.value;
+    }
+    return headValue;
+
 	};
 
 	storage.contains = function(value){
 		var pointer = this.head;
     do {
       if (pointer.value === value) {
-        debugger;
         return true;
       }
       pointer = pointer.next;
     } while (pointer != null);
-    debugger;
     return false;
 	};
 
@@ -40,7 +47,15 @@ var doublylinkedList = function (){
 	};
 
 	storage.removeTail = function(){
-
+    var tail = storage.tail;
+    var tailValue = null;
+    if(tail !== null){
+      //debugger;
+      storage.tail = storage.tail.previous;
+      storage.tail.next = null;
+      tailValue = tail.value;
+    }
+    return tailValue;
 	};
 
 	return storage;

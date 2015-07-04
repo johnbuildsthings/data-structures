@@ -27,4 +27,19 @@ describe('Doubly Linked List', function(){
     doubleList.addToHead('Bob');
     expect(doubleList.contains('Bob')).to.equal(true);
   })
+
+  it ('should return value of head once when removed', function(){
+    doubleList.addToTail('Jim');
+    doubleList.addToTail('Joe');
+    expect(doubleList.removeHead()).to.equal('Jim');
+    expect(doubleList.contains('Jim')).to.equal(false);
+  });
+
+  it('should return value of tail and then remove the tail', function(){
+    doubleList.addToTail('Jim');
+    doubleList.addToTail('Joe');
+    doubleList.addToHead('Bob');
+    expect(doubleList.removeTail()).to.equal('Joe');
+    expect(doubleList.contains('Joe')).to.equal(false);
+  })
 });

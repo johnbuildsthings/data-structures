@@ -41,4 +41,16 @@ describe('tree', function() {
     expect(tree.contains(8)).to.equal(true);
   });
 
+  it('should sever links and preserve both trees', function(){
+    tree.addChild(1);
+    tree.children[0].addChild(2);
+    tree.children[0].addChild(3);
+    tree.children[0].children[1].addChild(4);
+    tree.children[0].children[1].addChild(5);
+    var childTree = tree.children[0].children[1].removeFromParent();
+    expect(tree.contains(3)).to.equal(false);
+    expect(childTree.parent).to.equal(null);
+    expect(childTree.children[0].value).to.equal(4);
+  })
+
 });
