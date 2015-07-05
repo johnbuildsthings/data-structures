@@ -20,7 +20,14 @@ HashTable.prototype.insert = function(k, v){
     bucketList = LinkedList();
     this._storage.set(i, bucketList);
   }
-  bucketList.addToTail(v, k);
+  //loop to test to see if key is already used in bucketList
+  var searchedNode = retrieveNode(bucketList, k);
+  if(searchedNode){
+    searchedNode.value = v;
+  }else{
+    // else just add to tail
+    bucketList.addToTail(v, k);
+  }
 
   this._occupancy++;
   if (this._occupancy/this._limit >= this._DOUBLE) {

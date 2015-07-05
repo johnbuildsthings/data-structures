@@ -50,6 +50,14 @@ treeMethods.contains = function(target){
   	}
 };
 
+treeMethods.transverse = function(callback){
+  callback(this.value);
+  for(var i=0;i<this.children.length;i++){
+    this.children[i].transverse(callback);
+
+  }
+};
+
 
 
 

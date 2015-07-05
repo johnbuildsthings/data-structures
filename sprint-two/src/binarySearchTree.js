@@ -50,6 +50,35 @@ BinarySearchTree.prototype.depthFirstLog = function(iterator){
 	}
 };
 
+BinarySearchTree.prototype.breadthFirstLog = function(iterator) {
+  // if no second paramenter is provided, 
+  // make new array with "this" as value
+  var currentSiblings = arguments[1] || [this];
+
+  // make holder array
+  var childrenArray = [];
+
+
+  // loop though array
+  for (var i = 0; i < currentSiblings.length; i++) {
+    // call iterator
+    iterator(currentSiblings[i].value);
+
+    // push elements childen to holder array if not null
+    if (currentSiblings[i].left !== null) {
+      childrenArray.push(currentSiblings[i].left);
+    }
+    if (currentSiblings[i].right !== null) {
+      childrenArray.push(currentSiblings[i].right);
+    }
+  }
+  // if holder array is not empty
+  if (childrenArray.length > 0) {
+    // call breadthfirstlog on holder arrray    
+    this.breadthFirstLog(iterator, childrenArray);
+  }
+}
+
 
 
 /*
